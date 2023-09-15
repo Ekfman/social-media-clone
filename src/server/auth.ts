@@ -75,3 +75,6 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
+
+console.log("Discord Client ID:", process.env.DISCORD_CLIENT_ID);
+console.log("Discord Client Secret:", process.env.DISCORD_CLIENT_SECRET);
