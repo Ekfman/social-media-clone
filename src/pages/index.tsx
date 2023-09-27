@@ -2,7 +2,10 @@ import { type NextPage } from "next"
 
 const Home: NextPage = () => {
 
-  return <h1>Hi</h1>
+  return
+  <>
+  <header className="sticky top-0 z-10 border-b bg-white"></header>
+  </>
 }
 
 export default Home;
