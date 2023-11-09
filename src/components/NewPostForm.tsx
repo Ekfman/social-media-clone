@@ -37,7 +37,6 @@ function Form() {
       <div className="flex gap-4">
         <ProfileImage src={session.data.user.image} />
         <textarea
-          // style={{ height: 0 }}
           ref={inputRef}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
