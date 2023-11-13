@@ -10,6 +10,23 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
+  infiniteProfileFeed: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        limit: z.number().optional(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
+      }),
+    )
+    .query(async ({ input: { limit = 10, userId, cursor }, ctx }) => {
+      const currentUserId = ctx.session?.user.id;
+      return await getInfinitePosts({
+        limit,
+        ctx,
+        cursor,
+        whereClause: { userId },
+      });
+    }),
   infiniteFeed: publicProcedure
     .input(
       z.object({
@@ -25,7 +42,14 @@ export const postRouter = createTRPCRouter({
           limit,
           ctx,
           cursor,
-          whereClause: currentUserId == null || !onlyFollowing ? undefined : {},
+          whereClause:
+            currentUserId == null || !onlyFollowing
+              ? undefined
+              : {
+                  user: {
+                    followers: { some: { id: currentUserId } },
+                  },
+                },
         });
       },
     ),

@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import { ProfileImage } from "./ProfileImage";
 import { VscHeart, VscHeartFilled } from "react-icons/vsc";
 import { IconHoverEffect } from "./IconHoverEffect";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 type Post = {
   id: string;
@@ -30,7 +31,7 @@ export function InfinitePostList({
   fetchNewPosts,
   hasMore = false,
 }: InfinitePostListProps) {
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isLoading) return <LoadingSpinner/>;
   if (isError) return <h1>Error...</h1>;
   if (posts == null) return null;
 
@@ -46,7 +47,7 @@ export function InfinitePostList({
         dataLength={posts.length}
         next={fetchNewPosts}
         hasMore={hasMore}
-        loader={"Loading..."}
+        loader={<LoadingSpinner/>}
       >
         {posts.map((post) => {
           return <PostCard key={post.id} {...post} />;
