@@ -1,11 +1,6 @@
 import { useSession } from "next-auth/react";
-import {
-  FormEvent,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import type { FormEvent } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { Button } from "./Button";
 import { ProfileImage } from "./ProfileImage";
@@ -31,7 +26,7 @@ function Form() {
     updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
-  const trpcUtils = api.useContext()
+  const trpcUtils = api.useContext();
 
   useLayoutEffect(() => {
     updateTextAreaSize(textAreaRef.current);
@@ -41,32 +36,32 @@ function Form() {
     onSuccess: (newPost) => {
       setInputValue("");
 
-      if(session.status !== "authenticated") return
+      if (session.status !== "authenticated") return;
 
       trpcUtils.post.infiniteFeed.setInfiniteData({}, (oldData) => {
-        if(oldData == null || oldData.pages[0] == null) return
+        if (oldData?.pages?.[0] == null) return;
         const newCachePost = {
           ...newPost,
           likeCount: 0,
           likedByMe: false,
           user: {
             id: session.data.user.id,
-            name: session.data.user.name || null,
-            image: session.data.user.image || null,
-          }
-        } 
+            name: session.data.user.name ?? null,
+            image: session.data.user.image ?? null,
+          },
+        };
 
         return {
           ...oldData,
           pages: [
             {
               ...oldData.pages[0],
-              posts: [newCachePost, ...oldData.pages[0].posts]
+              posts: [newCachePost, ...oldData.pages[0].posts],
             },
-            ...oldData.pages.slice(1)
-          ]
-        }
-      })
+            ...oldData.pages.slice(1),
+          ],
+        };
+      });
     },
   });
 

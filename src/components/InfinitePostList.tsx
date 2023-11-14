@@ -157,7 +157,7 @@ function HeartButton({
   const HeartIcon = likedByMe ? VscHeartFilled : VscHeart;
   if (session.status !== "authenticated") {
     return (
-      <div className="gap 3 mb-1 mt-1 flex items-center self-start text-gray-500">
+      <div className="gap-3 mb-1 mt-1 flex items-center self-start text-gray-500">
         <HeartIcon />
         <span>{likeCount}</span>
       </div>

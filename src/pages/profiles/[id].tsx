@@ -39,7 +39,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     },
   });
 
-  if (profile == null || profile.name == null)
+  if (profile?.name == null)
     return <ErrorPage statusCode={404} />;
   return (
     <>
@@ -65,7 +65,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </div>
         <FollowButton
           isFollowing={profile.isFollowing}
-          isloading={toggleFollow.isLoading}
+          isLoading={toggleFollow.isLoading}
           userId={id}
           onClick={() => toggleFollow.mutate({ userId: id })}
         />

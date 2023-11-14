@@ -1,3 +1,5 @@
+import  type { ReactNode } from "react";
+
 type IconHoverEffectProps = {
   children: ReactNode;
   red?: boolean;
