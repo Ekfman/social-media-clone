@@ -19,21 +19,47 @@ export const profileRouter = createTRPCRouter({
         select: {
           name: true,
           image: true,
-          _count: {select: {followers: true, follows: true, posts: true}},
+          _count: { select: { followers: true, follows: true, posts: true } },
           followers:
             currentUserId == null
               ? undefined
               : { where: { id: currentUserId } },
         },
       });
-      if(profile == null) return
+      if (profile == null) return;
       return {
         name: profile.name,
         image: profile.image,
         followersCount: profile._count.followers,
         followsCount: profile._count.follows,
         postsCount: profile._count.posts,
-        isFollowing: profile.followers.length > 0
+        isFollowing: profile.followers.length > 0,
+      };
+    }),
+  toggleFollow: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ input: { userId }, ctx }) => {
+      const currentUserId = ctx.session.user.id;
+      const existingFollow = await ctx.db.user.findFirst({
+        where: { id: userId, followers: { some: { id: currentUserId } } },
+      });
+      let addedFollow;
+      if (existingFollow == null) {
+        await ctx.db.user.update({
+          where: { id: userId },
+          data: { followers: { connect: { id: currentUserId } } },
+        });
+        addedFollow = true;
+      } else {
+        await ctx.db.user.update({
+          where: { id: userId },
+          data: { followers: { disconnect: { id: currentUserId } } },
+        });
+        addedFollow = false;
       }
+      void ctx.revalidateSSG?.(`/profiles/${userId}`);
+      void ctx.revalidateSSG?.(`/profiles/${currentUserId}`);
+
+      return { addedFollow };
     }),
 });

@@ -59,6 +59,7 @@ export const postRouter = createTRPCRouter({
       const post = await ctx.db.post.create({
         data: { content: text, userId: ctx.session.user.id },
       });
+      void ctx.revalidateSSG?.(`/profiles/${ctx.session.user.id}`);
       return post;
     }),
   toggleLike: protectedProcedure
